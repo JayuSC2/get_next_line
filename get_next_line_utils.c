@@ -3,14 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 15:32:38 by juitz             #+#    #+#             */
-/*   Updated: 2023/10/29 22:44:23 by marvin           ###   ########.fr       */
+/*   Updated: 2023/10/30 13:29:22 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i] != '\0')
+		i++;
+	return (i);
+}
 
 char	*ft_strdup(const char *s)
 {
@@ -33,10 +43,13 @@ char	*ft_strdup(const char *s)
 	new[i] = '\0';
 	return (new);
 }
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*new;
-	size_t	len;
+	char			*new;
+	size_t			len;
+	unsigned int	i;
+	unsigned int	j;
 
 	if (!s1 || !s2)
 		return (NULL);
@@ -45,7 +58,27 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	if (!new)
 		return (NULL);
 	new[len] = '\0';
-	ft_strncpy(new, s1, len);
-	ft_strncat(new, s2, len);
+	i = 0;
+	while (i < len && s1[i] != '\0')
+		new[i++] = s1[i++];
+	i = 0;
+	j = 0;
+	while (new[i] != '\0')
+		i++;
+	while (j < len && s2[j] != '\0')
+		new[i++] = s2[j++];
 	return (new);
+}
+
+char	*ft_strchr(const char *str, int c)
+{
+	while (*str != '\0')
+	{
+		if (*str == (unsigned char)c)
+			return ((char *)str);
+		str++;
+	}
+	if ((char)c == '\0')
+		return ((char *)str);
+	return (NULL);
 }
