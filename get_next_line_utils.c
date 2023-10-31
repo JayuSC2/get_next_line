@@ -6,7 +6,7 @@
 /*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 15:32:38 by juitz             #+#    #+#             */
-/*   Updated: 2023/10/30 13:29:22 by juitz            ###   ########.fr       */
+/*   Updated: 2023/10/31 14:27:24 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,32 @@ char	*ft_strchr(const char *str, int c)
 	if ((char)c == '\0')
 		return ((char *)str);
 	return (NULL);
+}
+
+char	*ft_substr(char const *str, unsigned int start, size_t len)
+{
+	char	*sub;
+	size_t	i;
+
+	i = 0;
+	if (start >= ft_strlen(str) || len == 0)
+	{
+		sub = (char *)malloc(1);
+		if (!sub)
+			return (NULL);
+		sub[0] = '\0';
+		return (sub);
+	}
+	if (len > ft_strlen(str) - start)
+		len = ft_strlen(str) - start;
+	sub = (char *)malloc(len + 1);
+	if (!sub)
+		return (NULL);
+	while (i < len && str[start + i] != '\0')
+	{
+		sub[i] = str[start + i];
+		i++;
+	}
+	sub[i] = '\0';
+	return (sub);
 }
