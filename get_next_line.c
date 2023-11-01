@@ -6,25 +6,26 @@
 /*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 15:28:25 by juitz             #+#    #+#             */
-/*   Updated: 2023/10/31 14:53:58 by juitz            ###   ########.fr       */
+/*   Updated: 2023/11/01 16:15:37 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*read_line(int fd, char *buffer, char *s_line)
+char	*read_line(int fd, char *buffer, char *backup)
 {
 	int		bytes_read;
 	char	*temp;
 
+	bytes_read = 1;
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		buffer[bytes_read] = '\0';
-		if (!s_line)
-			s_line = ft_strdup("");
-		temp = s_line;
-		s_line = ft_strjoin(temp, buffer);
+		if (!backup)
+			backup = ft_strdup("");
+		temp = backup;
+		backup = ft_strjoin(temp, buffer);
 		free(temp);
 		temp = NULL;
 		if (ft_strchr(buffer, '\n'))
@@ -32,33 +33,57 @@ char	*read_line(int fd, char *buffer, char *s_line)
 	}
 	if (bytes_read == 0 || bytes_read == -1)
 		return (0);
-	return (s_line);
+	return (backup);
 }
-/* 
-char	*extract_line(char *full_text)
+
+char	*extract_line(char *text)
 {
-	char	*s_line;
+	char	*backup;
 	int		i;
 
 	i = 0;
-	if (!full_text)
-		return (NULL);
-	while (full_text[i] != '\n' || full_text[i] != '\0')
-		i++;
-	if (full_text[i] == '\n')
+	if (!text)
 	{
-		s_line = malloc(sizeof(char *) * BUFFER_SIZE + 1);
-		s_line[i++] = full_text[i++];
-		free (full_text);
-		s_line[++i] = '\n';
-		s_line[++i] = '\0';
+		free(text);
+		return (NULL);
 	}
+	while (text[i] != '\n' || text[i] != '\0')
+	{
+		backup = malloc(sizeof(char) * BUFFER_SIZE + 1);
+		backup[i] = text[i];
+		i++;
+	}
+	free (text);
+	if (text[i] == '\n')
+		backup[i++] = '\n';
+	return (backup);
 }
- */
+
+char	*get_next_line(int fd)
+{
+	char	*buffer;
+	char	*text;
+	static char	*backup;
+
+	backup = NULL;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (0);
+	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return(0);
+	text = read_line(fd, buffer, backup);
+	free(buffer);
+	buffer = 0;
+	if (!text)
+		return (0);
+	backup = extract_line(text);
+	return (text);
+}
+
 /* char	*get_next_line(int fd)
 {
 	char	buffer;
-	char	s_line[7000000];
+	char	backup[7000000];
 	int		bytes_read;
 	int		i;
 
@@ -68,14 +93,14 @@ char	*extract_line(char *full_text)
 	bytes_read = read(fd, &buffer, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
-		s_line[i++] = buffer;
+		backup[i++] = buffer;
 		if (buffer == '\n')
 			break ;
 		bytes_read = read (fd, &buffer, BUFFER_SIZE);
 	}
-	s_line = '\0';
+	backup = '\0';
 	if (bytes_read <= 0)
 		return (NULL);
-	return (ft_strdup(s_line));
+	return (ft_strdup(backup));
 }
  */

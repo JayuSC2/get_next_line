@@ -6,7 +6,7 @@
 /*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/23 15:32:38 by juitz             #+#    #+#             */
-/*   Updated: 2023/10/31 14:27:24 by juitz            ###   ########.fr       */
+/*   Updated: 2023/11/01 16:21:19 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ size_t	ft_strlen(const char *str)
 	return (i);
 }
 
-char	*ft_strdup(const char *s)
+
+/* char	*ft_strdup(const char *s)
 {
 	char	*new;
 	int		i;
@@ -42,7 +43,7 @@ char	*ft_strdup(const char *s)
 	}
 	new[i] = '\0';
 	return (new);
-}
+} */
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -60,7 +61,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	new[len] = '\0';
 	i = 0;
 	while (i < len && s1[i] != '\0')
-		new[i++] = s1[i++];
+	{
+		new[i] = s1[i];
+		i++;
+	}
 	i = 0;
 	j = 0;
 	while (new[i] != '\0')
