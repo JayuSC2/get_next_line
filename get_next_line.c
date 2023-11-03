@@ -3,104 +3,152 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/23 15:28:25 by juitz             #+#    #+#             */
-/*   Updated: 2023/11/01 16:15:37 by juitz            ###   ########.fr       */
+/*   Created: 2023/11/02 21:18:45 by marvin            #+#    #+#             */
+/*   Updated: 2023/11/03 08:42:51 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "get_next_line.h"
 
-char	*read_line(int fd, char *buffer, char *backup)
+char	*ft_join_and_free(char *text, char *buffer)
 {
-	int		bytes_read;
 	char	*temp;
 
+	temp = ft_strjoin(text, buffer);
+	free(text);
+	return (temp);
+}
+
+char	*read_line(int fd, char *text)
+{
+	char	*buffer;
+	int		bytes_read;
+
+	if (!text)
+		text = ft_calloc(1, 1);
+		/* if (!text)
+			return (NULL); */
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (NULL);
 	bytes_read = 1;
 	while (bytes_read > 0)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (bytes_read == -1)
+			return (free(text), free(buffer), NULL);
 		buffer[bytes_read] = '\0';
-		if (!backup)
-			backup = ft_strdup("");
-		temp = backup;
-		backup = ft_strjoin(temp, buffer);
-		free(temp);
-		temp = NULL;
-		if (ft_strchr(buffer, '\n'))
+		text = ft_join_and_free(text, buffer);
+		if (!text)
+			return (NULL);
+		if (ft_strchr(text, '\n'))
 			break ;
 	}
-	if (bytes_read == 0 || bytes_read == -1)
-		return (0);
-	return (backup);
+	return (free(buffer), text);
 }
 
 char	*extract_line(char *text)
 {
-	char	*backup;
 	int		i;
+	char	*str;
 
 	i = 0;
-	if (!text)
-	{
-		free(text);
+	if (!text[i])
 		return (NULL);
-	}
-	while (text[i] != '\n' || text[i] != '\0')
+	while (text[i] != '\n' && text[i] != '\0')
+		i++;
+	str = ft_calloc(i + 2, sizeof(char));
+	//added this 
+	if(!str)
+		return (NULL);
+	i = 0;
+	while (text[i] != '\n' && text[i] != '\0')
 	{
-		backup = malloc(sizeof(char) * BUFFER_SIZE + 1);
-		backup[i] = text[i];
+		str[i] = text[i];
 		i++;
 	}
+	if (text[i] == '\n' && text[i] != '\0')
+		str[i++] = '\n';
+	return (str);
+}
+
+char	*clean_line(char *text)
+{
+	int		i;
+	int		j;
+	char	*str;
+
+	i = 0;
+	j = 0;
+	while (text[i] != '\n' && text[i] != '\0')
+		i++;
+	if (!text[i])
+	{
+		free (text);
+		return (NULL);
+	}
+	str = ft_calloc((ft_strlen(text) - i + 1), sizeof(*text));
+	if (!str)
+		return (NULL);
+	while (text[++i])
+		str[j++] = text[i];
+	str[j] = '\0';
 	free (text);
-	if (text[i] == '\n')
-		backup[i++] = '\n';
-	return (backup);
+	return (str);
 }
 
 char	*get_next_line(int fd)
 {
-	char	*buffer;
-	char	*text;
-	static char	*backup;
+	char		*output_text;
+	static char	*text;
 
-	backup = NULL;
 	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (0);
-	buffer = malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (!buffer)
-		return(0);
-	text = read_line(fd, buffer, backup);
-	free(buffer);
-	buffer = 0;
+		return (NULL);
+	text = read_line(fd, text);
 	if (!text)
-		return (0);
-	backup = extract_line(text);
-	return (text);
+		return (NULL);
+	output_text = extract_line(text);
+	text = clean_line(text);
+	return (output_text);
 }
 
-/* char	*get_next_line(int fd)
+int	main(void)
 {
-	char	buffer;
-	char	backup[7000000];
-	int		bytes_read;
-	int		i;
-
-	i = 0;
-	if (fd < 0 || BUFFER_SIZE <= 0)
-		return (NULL);
-	bytes_read = read(fd, &buffer, BUFFER_SIZE);
-	while (bytes_read > 0)
+	int	file;
+	char *buffer;
+	
+	buffer = NULL;
+	file = open("test.txt", O_RDONLY);
+	buffer = get_next_line(file);
+	if(buffer == NULL)
+		return (-1);
+	while (buffer != NULL)
 	{
-		backup[i++] = buffer;
-		if (buffer == '\n')
-			break ;
-		bytes_read = read (fd, &buffer, BUFFER_SIZE);
+		printf("%s", buffer);
+		free(buffer);
+		buffer = get_next_line(file); 	
 	}
-	backup = '\0';
-	if (bytes_read <= 0)
-		return (NULL);
-	return (ft_strdup(backup));
-}
- */
+	//read_line(file, buffer);
+	//printf("%s", buffer);
+	free(buffer);
+	close(file);
+	return (0);
+} 
+/* int main()
+{
+	int fd = open("test.txt", O_RDONLY);
+	char *a;
+
+	while ((a = get_next_line(fd) ) != NULL)
+	{
+		printf("%s", a);
+		free(a);
+	}
+	free(a);
+	// printf("%s", get_next_line(fd));
+
+	return 0;
+} */
