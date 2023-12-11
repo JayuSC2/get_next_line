@@ -3,14 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 21:19:32 by marvin            #+#    #+#             */
-/*   Updated: 2023/11/02 21:19:33 by marvin           ###   ########.fr       */
+/*   Created: 2023/11/03 11:25:45 by juitz             #+#    #+#             */
+/*   Updated: 2023/11/03 14:03:44 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-
 
 #include "get_next_line.h"
 
@@ -65,15 +63,16 @@ void	ft_bzero(void *s, size_t n)
 	while (n--)
 		*p++ = '\0';
 }
-void	*ft_calloc(size_t nitems, size_t size)
+
+void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
 
-	if (((size_t) -1) < nitems * size)
+	if (((size_t) -1) < count * size)
 		return (NULL);
-	ptr = (void *)malloc(nitems * size);
+	ptr = (void *)malloc(count * size);
 	if (!ptr)
 		return (NULL);
-	ft_bzero(ptr, size * nitems);
+	ft_bzero(ptr, size * count);
 	return (ptr);
 }

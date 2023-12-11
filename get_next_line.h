@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 21:19:05 by marvin            #+#    #+#             */
-/*   Updated: 2023/11/02 22:22:38 by marvin           ###   ########.fr       */
+/*   Created: 2023/11/03 11:25:55 by juitz             #+#    #+#             */
+/*   Updated: 2023/11/03 11:25:59 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef  GET_NEXT_LINE_H
+#ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define  BUFFER_SIZE 1337
+#  define BUFFER_SIZE 1337
 # endif
 
 # include <unistd.h>
@@ -30,6 +30,5 @@ char	*read_line(int fd, char *text);
 char	*extract_line(char *text);
 char	*clean_line(char *text);
 void	*ft_calloc(size_t count, size_t size);
-void	ft_bzero(void *s, size_t n);
 
 #endif

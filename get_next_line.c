@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: juitz <juitz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/02 21:18:45 by marvin            #+#    #+#             */
-/*   Updated: 2023/11/03 08:42:51 by marvin           ###   ########.fr       */
+/*   Created: 2023/11/02 20:29:39 by codespace         #+#    #+#             */
+/*   Updated: 2023/12/05 14:14:29 by juitz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "get_next_line.h"
+#include "libft.h"
 
 char	*ft_join_and_free(char *text, char *buffer)
 {
@@ -29,8 +28,6 @@ char	*read_line(int fd, char *text)
 
 	if (!text)
 		text = ft_calloc(1, 1);
-		/* if (!text)
-			return (NULL); */
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
@@ -47,32 +44,32 @@ char	*read_line(int fd, char *text)
 		if (ft_strchr(text, '\n'))
 			break ;
 	}
-	return (free(buffer), text);
+	free (buffer);
+	return (text);
 }
 
 char	*extract_line(char *text)
 {
 	int		i;
-	char	*str;
+	char	*output;
 
 	i = 0;
 	if (!text[i])
 		return (NULL);
-	while (text[i] != '\n' && text[i] != '\0')
+	while (text[i] != '\0' && text[i] != '\n')
 		i++;
-	str = ft_calloc(i + 2, sizeof(char));
-	//added this 
-	if(!str)
+	output = ft_calloc(i + 2, sizeof(char));
+	if (!output)
 		return (NULL);
 	i = 0;
-	while (text[i] != '\n' && text[i] != '\0')
+	while (text[i] != '\0' && text[i] != '\n')
 	{
-		str[i] = text[i];
+		output[i] = text[i];
 		i++;
 	}
-	if (text[i] == '\n' && text[i] != '\0')
-		str[i++] = '\n';
-	return (str);
+	if (text[i] != '\0' && text[i] == '\n')
+		output[i++] = '\n';
+	return (output);
 }
 
 char	*clean_line(char *text)
@@ -83,14 +80,14 @@ char	*clean_line(char *text)
 
 	i = 0;
 	j = 0;
-	while (text[i] != '\n' && text[i] != '\0')
+	while (text[i] && text[i] != '\n')
 		i++;
 	if (!text[i])
 	{
 		free (text);
 		return (NULL);
 	}
-	str = ft_calloc((ft_strlen(text) - i + 1), sizeof(*text));
+	str = ft_calloc((ft_strlen(text) - i + 1), sizeof(char));
 	if (!str)
 		return (NULL);
 	while (text[++i])
@@ -131,23 +128,20 @@ int	main(void)
 		free(buffer);
 		buffer = get_next_line(file); 	
 	}
-	//read_line(file, buffer);
-	//printf("%s", buffer);
 	free(buffer);
 	close(file);
 	return (0);
-} 
+}
 /* int main()
 {
-	int fd = open("test.txt", O_RDONLY);
+	int fd = open("a.txt", O_RDONLY);
 	char *a;
 
-	while ((a = get_next_line(fd) ) != NULL)
+	while ((a = get_next_line(fd)))
 	{
 		printf("%s", a);
-		free(a);
 	}
-	free(a);
+
 	// printf("%s", get_next_line(fd));
 
 	return 0;
